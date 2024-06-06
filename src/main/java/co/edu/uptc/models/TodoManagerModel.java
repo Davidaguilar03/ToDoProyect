@@ -2,9 +2,13 @@ package co.edu.uptc.models;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import co.edu.uptc.interfaces.TodoInterface;
 import co.edu.uptc.interfaces.TodoInterface.Presenter;
+import co.edu.uptc.persistence.JsonPersistenceService;
 import co.edu.uptc.pojos.Task;
+import co.edu.uptc.utilities.PropertiesService;
 import co.edu.uptc.utilities.UniqueIDGenerator;
 import lombok.Getter;
 
@@ -55,14 +59,26 @@ public class TodoManagerModel implements TodoInterface.Model{
 
     @Override
     public void loadData() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadData'");
+        JsonPersistenceService jsonPersistenceService = new JsonPersistenceService();
+        PropertiesService propertiesService = new PropertiesService();
+        try {
+            this.tasks = jsonPersistenceService.jsonToObject(propertiesService.getKeyValue("TaskPath"), new TypeReference<ArrayList<Task>>() {
+                
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void writeData() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'writeData'");
+        JsonPersistenceService jsonPersistenceService = new JsonPersistenceService();
+        PropertiesService propertiesService = new PropertiesService();
+        try {
+            jsonPersistenceService.objectToJson(this.tasks, propertiesService.getKeyValue("TaskPath"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
